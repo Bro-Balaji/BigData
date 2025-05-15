@@ -1,0 +1,28 @@
+Observations
+allocated NM cores : 70
+allocated NM memory : 483 GB
+server compute : 96 cores / 755 gb
+
+Eventhough the allocated cores and memory are subjective for the node but we observed intermittenly the cpu of NM peaks more than 90 %
+
+At the time of high cpu utilization we observed the production service account has more processors running
+but from the container level on each host we can see only 50% of cpus where used
+
+Nature of jobs which are running
+Spark jobs which uses adhoc hdfs (Dproc_fs and Dproc_dfs) command on the spark job to write the data on ozone
+This approach is taken to minimize the loss of image resolution and pixels (as per dev)
+Around 50,000 files for a batch of ingestion
+
+Conclusion
+Current scenario
+Since the spark jobs run adhoc hdfs put commands it wont use the yarn container compute rather than it uses overall system compute by spawning process for each of the adhoc hdfs put commands
+So on the NM where the job launched it peaks the cpu since the job will perform alot of I/Os on the node (and it is out os scope of the allocated yarn compute as it leverages the overall compute of the server). End up in utilizing the compute of the server to max
+
+Provided workaround 1
+To use the spark inbuilt frame work to write (df.write) into ozone as this approach limits the job to use the compute of yarn and wont allow the job to use the overall server compute
+(Testing need to be on the quality of the image post writing via spark frame work)
+
+Provided workaround 2
+If writing the files using spark inbuilt frame work reduces the quality of the image
+ideal way is to reduce the files/ingestion and to process small batches of files at a time
+(Note : This is not recommended since multiple jobs ingesting small batches of files via adhoc hdfs put commands might result in cpu spike of the NM )
