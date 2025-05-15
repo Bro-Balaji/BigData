@@ -1,0 +1,23 @@
+Overview of ozone features
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.8/ozone-overview/ozone-overview.pdf
+
+Comparision with hdfs,ozone and s3api
+https://blog.cloudera.com/apache-ozone-a-high-performance-object-store-for-cdp-private-cloud/
+
+Hive Tez optimisation in Cloudera
+https://blog.cloudera.com/optimizing-hive-on-tez-performance/
+
+Multi-Raft – Boost up write performance for Apache Hadoop-O
+https://blog.cloudera.com/multi-raft-boost-up-write-performance-for-apache-hadoop-ozone/
+
+Guide for migrating from HDFS to Ozone also few details related to ranger policy also
+https://docs.cloudera.com/cdp-private-cloud-upgrade/latest/hdfs-ozone-migration/hdfs-ozone-migration.pdf
+
+Benchmarking form cloudera done on few dataset for HIVE they got ozone performance better then hdfs
+https://blog.cloudera.com/benchmarking-ozone-clouderas-next-generation-storage-for-cdp/
+
+Permission management in Ozone
+https://docs.cloudera.com/cdp-private-cloud-upgrade/latest/hdfs-ozone-migration/topics/ozone-permissions-models.html
+
+Tuning distcp performance
+https://stackoverflow.com/questions/54104572/asisstance-in-reducing-execution-time-of-distcp-operation 

@@ -1,0 +1,55 @@
+Prerequisites: For SHS to work as HA, Knox service must be installed in Cloudera Manager.
+
+Steps:
+Login to Cloudera Manager.
+
+Navigate to CLuster > Spark service.
+
+Click Action > Add Role Instance, On history server select the required server.
+
+Select the knox_service option on the Spark configuration page to add the following configurations after the “Deploy Client Configuration” action.
+
+/etc/spark/conf/spark-defaults.conf:
+
+spark.yarn.historyServer.address=https://knox.example.com:8443/gateway/cdp-proxy/sparkhistory/
+
+Take restart of Spark service.
+
+The following Knox topology configuration is automatically generated if there are two Spark History Server clusters in a Cloudera Manager cluster
+
+Take restart of Spark service.
+
+The following Knox topology configuration is automatically generated if there are two Spark History Server clusters in a Cloudera Manager cluster
+
+/var/lib/knox/gateway/conf/topologies/cdp-proxy.xml
+
+<param>
+   <name>SPARKHISTORYUI</name>
+   <value>enabled=true;maxFailoverAttempts=3;failoverSleep=1000</value>
+</param>
+
+<service>
+    <role>SPARKHISTORYUI</role>
+    <url>https://shs3.example.com:18488</url>
+    <url>https://shs4.example.com:18488</url>
+</service>
+
+To use the Knox load balancing feature, you must use the Knox Gateway URL. If one of the Spark History Servers is down, the connection will be automatically redirected to the other server.
+
+https://knox.example.com:8443/gateway/cdp-proxy/sparkhistory/
+
+Still If you're are not able to see 2 SHS on knox cdp-proxy.xml topology file, disable and enable spark web ui checkbox from knox configuration and restart knox.
+
+Limitation for Spark History Server with high availability:
+The second SHS in the cluster does not clean the Spark event logs. Cleaning Spark event logs is automatically disabled from the Custom Service Descriptor.
+
+The second server can only read logs. This limitation ensures that two SHSs do not try to delete the same files.
+
+If the first SHS is down, the second one does not take over the cleaner task. This is not a critical issue because if the first SHS starts again, it will delete those old Spark event logs.
+
+The default event log cleaner interval (spark.history.fs.cleaner.interval) is 1 day in Cloudera Manager which means that the first SHS only deletes the old logs once per day by default.
+
+Documents referred:
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.9/configuring-spark/topics/spark-hs-high-availability-limitations.html
+
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.9/configuring-spark/topics/spark-hs-high-availability-lb-internal.html
