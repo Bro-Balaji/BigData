@@ -1,0 +1,17 @@
+Post call to block R/W to a particular index
+
+curl -u user:password -X PUT "http://eshostname:9200/my_index/_settings" -H 'Content-Type: application/json' -d '{
+  "settings": {
+    "index.blocks.write":true,
+    "index.blocks.read": true
+  }
+}'
+
+Post call to unblock R/W to a particular Index
+
+curl -u user:password -X PUT "http://eshostname:9200/my_index/_settings" -H 'Content-Type: application/json' -d '{
+  "settings": {
+    "index.blocks.write":false,
+    "index.blocks.read": false
+  }
+}'
