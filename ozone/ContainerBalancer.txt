@@ -1,0 +1,46 @@
+Here’s a breakdown of the properties used in the ozone admin containerbalancer start command:
+~~~
+ozone admin containerbalancer start \
+  --threshold=1 \
+  --max-datanodes-percentage-to-involve-per-iteration=100 \
+  --max-size-entering-target-in-gb=200 \
+  --iterations=500 \
+  --max-size-leaving-source-in-gb=200
+~~~
+
+This command starts the Ozone Container Balancer, which redistributes containers across DataNodes to balance disk usage.
+Parameter Explanations:
+1. --threshold=1
+    Meaning: The target disk usage variance (in percent) between DataNodes.
+    Function: Container Balancer will try to ensure that all DataNodes’ disk usages are within ±1% of the average utilization.
+    Impact: Smaller thresholds mean more aggressive balancing.
+2. --max-datanodes-percentage-to-involve-per-iteration=100
+    Meaning: Percentage of total DataNodes to include in each iteration of balancing.
+    Function: With 100, all DataNodes can be involved in each iteration.
+    Impact: Increases parallelism and speed of balancing but may cause more cluster activity.
+3. --max-size-entering-target-in-gb=200
+    Meaning: Maximum total container size (in GB) that can be moved into a target DataNode in one iteration.
+    Function: Prevents overloading a DataNode with too many container writes.
+    Impact: Protects performance of destination nodes.
+4. --iterations=500
+    Meaning: Maximum number of balancing iterations to run.
+    Function: Each iteration performs some container moves; this limits how many times it will loop.
+    Impact: If the cluster reaches the desired balance before 500 iterations, it will stop early.
+5. --max-size-leaving-source-in-gb=200
+    Meaning: Maximum total container size (in GB) that can be moved out of a source DataNode in one iteration.
+    Function: Prevents overloading a DataNode with too many container reads.
+    Impact: Protects performance of source nodes.
+
+==>  and also is there any feasibility to set this config on the CM ozone config
+The properties are included in CM in Ozone configs too, but we do not recommend to run always by default it as it is aggressive, hence suggested to perform via CLI.
+In CM -> Ozone -> Configs -> Search below parameters :
+- Balancing Threshold/hdds.container.balancer.utilization.threshold (alternative to --threshold in CLI)
+- Maximum Percentage of Datanodes Involved in Balancing/hdds.container.balancer.datanodes.involved.max.percentage.per.iteration (default 20) (alternative to --max-datanodes-percentage-to-involve-per-iteration in CLI)
+- Maximum Size to Move in Balancing/hdds.container.balancer.size.moved.max.per.iteration (default 500 GB)
+- Maximum Size Entering Target/hdds.container.balancer.size.entering.target.max (default 26) (alternative to --max-size-entering-target-in-gb in CLI)
+- Maximum Size Leaving Source/hdds.container.balancer.size.leaving.source.max (default 26) (alternative to --max-size-leaving-source-in-gb in CLI)
+- Number of Balancing Iterations/hdds.container.balancer.iterations (default 10) (alternative to --iterations in CLI)
+
+
+==>  and does 500 is the hardlimit for iteration ?
+It is not a hard limit. Since we cannot identify in how many iterations it would complete, we suggested a higher value and recommended to rerun if it is still not completely balanced.
