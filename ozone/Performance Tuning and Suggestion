@@ -1,0 +1,156 @@
+Best practices suggested by cloudera
+
+How many number of volumes we can create in ozone (Do we have restriction in creation of volumes). what is the maximum number of volumes does cloudera recommends ?
+There is no such restriction as such and we can create n number of volumes in ozone but we would recommend to volumes counts around 50 and about 1k buckets per volume, Volumes can be only created by user with administrator privilege's.
+
+Can we create multiple folders inside a bucket and provide access control accordingly for the folders inside a bucket . If it is possible need to know the ozone commands to create folders inside a bucket ?
+Yes, We can create a directory inside a folder, Allow me some time to check on the ACL part and the ozone command to create a directory inside a bucket, for now you can create with hdfs command.
+hdfs dfs -mkdir -p ofs://<ozone-nameservice>/vol/buck1/test1/test2.
+
+And also whatever we create inside a bucket does it falls under keys category or can we have buckets inside a bucket and folders inside. Wanted to know how can we differentiate a bucket , folders and keys ?
+I am checking on this with our internal team, allow me some more time.
+
+Provide the best practices which cloudera recommends.
+
+https://docs.cloudera.com/cdp-private-cloud-upgrade/latest/hdfs-ozone-migration/topics/hdfs-ozone-roles-sizing.html
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.8/ozone-performance-tuning/topics/ozone-performance-tuning-for-ozone.html
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Replication factor in ozone
+Questions/concerns we had on replicaton
+We need to understand how replication works on ozone
+
+we have set the replication factor as 3 does it mean (1original + 3 replicas of original data) or (1 original + 2 replicas of original data )
+Any specific reason why setting up replication as 2 is not allowed in ozone
+What value does cloudera recommends on replication factor for ozone on a production environment
+what will be the percentage of risk involved on data loss if we set replication as 1 on prod environment
+Please share relevant docs on replication in ozone
+
+Suggestion/solution/recommendation/best practice provided by cloudera
+In the context of Apache Ozone, setting the replication factor to 3 means that each original piece of data will have two additional replicas, resulting in a total of three copies of the original data spread across different nodes. So, it's 1 original + 2 replicas of the original data.
+
+Please note, Data is replicated between datanodes with the help of RAFT consensus algorithm which always should form a quorum.
+
+A quorum is a majority of members from a peer set: for a set of size N, quorum requires at least (N/2)+1 members. For example, if there are 5 members in the peer set, we would need 3 nodes to form a quorum. If a quorum of nodes is unavailable for any reason, the cluster becomes unavailable and no new logs can be committed.
+
+Cloudera recommend setting the replication factor to RATIS/3 for production environments in order to ensure high availability and fault tolerance.
+
+Setting the replication factor to 1 in a production environment introduces a significant risk of data loss. With a replication factor of 1, there are no additional copies of the data, meaning that if the single copy becomes unavailable due to node failure or other issues, the data will be lost. The percentage of risk involved depends on various factors including the reliability of the underlying hardware and infrastructure, the frequency of failures, and the importance of the data. However, generally speaking, the risk of data loss with a replication factor of 1 is high and is not recommended for production environments where data durability and availability are crucial.
+
+Refer : https://developer.hashicorp.com/consul/docs/architecture/consensus
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Difference Between Offline and Decomission Mode
+Offline Mode
+a) Purpose: Designed for temporary maintenance, upgrades, or short-term downtime.
+
+b) Replication Behavior: Ozone ensures at least two replicas of each container exist on other nodes before marking a DataNode offline. This threshold can be reduced to one to speed up the transition, if acceptable.
+
+c) Duration: Temporary—the DataNode is expected to return to service.
+
+d) Reintegration: When the node comes back online, no active cleanup of extra replicas occurs immediately.
+
+Decommission Mode
+a) Purpose: Used when a DataNode is being permanently removed or taken out of service for an extended period.
+
+b) Replication Behavior: Ozone replicates all containers on the decommissioned node to other healthy nodes.
+
+c) Duration: Permanent or long-term—the DataNode is not expected to return.
+
+d)Reintegration: If brought back and recommissioned, Ozone will rebalance or remove excess data from the node.
+
+Summary
+-> Both strategies ensure data safety via replication.
+
+-> Offline Mode is ideal for short-term maintenance without affecting cluster stability.
+
+-> Decommissioning is suited for permanent removal of a node and is more resource-intensive.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+FAQ's
+➤ Can you confirm scaling up OM and SCM to 5 node is not possible
+
+A1] : We recommend 3 Node OM and SCM HA ring
+
+➤ what are the risk factors to be considered in working with 2 scm instance
+
+A1] : With 2 SCM nodes , you're Ozone will continue to function as expected and Application Team would still be able to read & write to Ozone
+
+A2] : the only point to remember is once you upgrade to CDP 7.1.9 make sure to remove the stale information of SCM which was installed on old host 31 and then follow proper guide for adding new Host to SCM
+
+Note: Same response [A2] goes to Query 2 ] i.e In recon Ui we can see the 3/4 nodes are healthy eventhough on cli it reports 3 nodes are healthy. Any specific reason for it
+
+➤ On failure of any scm node (node is completely unrecoverable). With cdp 7.1.7 there is no option to add or remove (decomission) the scm from the backend
+
+A: Custom approach do exist but would still recommend to upgrade to CDP 7.1.9 to use the readily available option of "Decommission"
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Minimize the Replication during Offline Mode
+By default, Ozone ensures at least two replicas of each container are available before placing a DataNode into offline mode, which can trigger replication activity.
+
+If the downtime is short and controlled, and you would like to minimize or avoid unnecessary replication, you can configure Ozone to allow just one replica during the offline process. This reduces the time required for the node to enter offline mode and helps avoid replication, though please note it comes with a trade-off in data availability in case another failure occurs.
+
+To achieve this, you can update the following configuration in Cloudera Manager:
+
+Go to the Ozone service.
+
+Navigate to Configuration.
+
+Search for the property:
+Storage Container Manager Advanced Configuration Snippet (Safety Valve) for ozone-conf/ozone-site.xml
+
+Add the following:
+
+Name: hdds.scm.replication.maintenance.replica.minimum
+Value: 1
+Save the changes.
+
+Restart the Storage Container Manager (SCM) instances.
+
+For your reference, please see the official documentation:
+
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.9/ozone-storing-data/topics/ozone-host-maint-mode.html
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.9/ozone-storing-data/topics/ozone-maint-sc-copies.html
+
+We suspect this is related to a RocksDB bug that was found by Cloudera (https://github.com/facebook/rocksdb/issues/8617) where having lots of rocksdb instances (Ozone DataNode use case) open/close frequently can lead to a race condition and crash the process.
+
+The related Ozone jira: HDDS-5756 (https://issues.apache.org/jira/browse/HDDS-5756) SIGSEGV RocksDB crash in Datanode and above is the workaround which helps mitigate an issue within RocksDB.
+
+However, we can hold on with the changes related to ozone.container.cache.size for now and monitor for any similar crash issues, and collect the process directory along with latest ozone data node logs for our review.
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Reason for missing or underreplicated containers
+
+- Stale SCM leader state with outdated container information
+- SCM leader election issues causing inconsistent container status reporting
+- Ratis consensus problems affecting state replication between SCM nodes
+- Incomplete state synchronization after SCM leadership transitions
+- Network partitions causing delayed/missed DataNode heartbeats
+- Split-brain scenarios with multiple SCMs believing they were leaders
+- RocksDB inconsistencies in the SCM database
+- Delayed container report processing that caught up after restart
+- Temporary Ratis log inconsistencies between SCM nodes
+- SCM cache staleness resolved by service restart
+- Quorum maintenance problems affecting container state reporting
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Openfile descriptors count is high
+
+Questions
+But if we hard limit the open files count doesnt it halt the the process if it reaches the thershold
+what will be default value of ozone.container.cache.size if we didnt override the config
+what will be default value for Maximum Process File Descriptors if we didnt override the config
+what is the production grade config does cloudera recommends
+
+Cloudera suggestion
+
+file descriptor limit if not set defaults to 32,768, our suggestion is to double it , eg : 65,536
+ozone.container.cache.size defaults to 1024, it can go max upto 1024000, high cache size helps to avoid SIGSEGV RocksDB crash in Datanode
+Hence, the suggestion was to raise it to 60000 and we have seen multiple customer setting the same with raise in fd values.
