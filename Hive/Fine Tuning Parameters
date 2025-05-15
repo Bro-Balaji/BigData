@@ -1,0 +1,7 @@
+set mapred.reduce.tasks=50;
+set tez.runtime.io.sort.mb=800;
+set tez.grouping.split-count=40;
+set hive.tez.container.size=4096;
+set tez.grouping.max-size=268435456;
+set tez.grouping.min-size=16777216;
+set tez.task.resource.memory.mb=2048;

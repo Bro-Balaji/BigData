@@ -43,7 +43,7 @@ curl -X POST https://workspacedomain/api/2.0/instance-pools/edit \
   -H "Content-Type: application/json" \
   -d '{
         "instance_pool_id": "POOL_ID",
-        "instance_pool_name": "devops",
+        "instance_pool_name": "POOL_NAME",
         "min_idle_instances": 0,
         "max_capacity": 6
       }'
