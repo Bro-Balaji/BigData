@@ -1,0 +1,49 @@
+
+# To list the workflow jobs
+
+curl -X GET "https://workspacedomain/api/2.2/jobs/list" \
+      -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+# To list the workflow job runs
+
+curl -X GET "https://workspacedomain/api/2.1/jobs/runs/list" \
+       -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+# To list the clusters via API
+
+curl -X GET "https://workspacedomain/api/2.1/clusters/list" \
+     -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+# To list the cluster policies
+
+curl -X GET "https://workspacedomain/api/2.0/policies/clusters/list" \
+        -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+
+
+# Resize the compute (compute should be in running state)
+
+curl -X POST "https://workspacedomain/api/2.1/clusters/resize" \
+     -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "cluster_id": "COMPUTE_ID",
+           "autoscale": {
+             "min_workers": 1,
+             "max_workers": 3
+           }
+         }'
+
+# Resize pool
+
+curl -X POST https://workspacedomain/api/2.0/instance-pools/edit \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "instance_pool_id": "POOL_ID",
+        "instance_pool_name": "devops",
+        "min_idle_instances": 0,
+        "max_capacity": 6
+      }'
