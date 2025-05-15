@@ -1,0 +1,27 @@
+Summary
+Import-hive script timing out when there are hundred/thousand of DB to be imported
+Symptoms
+In certain scenarios the process to import hive metadata into Atlas can take longer, depending on the amount of data
+
+This can cause the process to time out as it takes longer that the default settings:
+
+------------------
+org.apache.atlas.hook.AtlasHookException: HiveMetaStoreBridge.registerTable() failed.
+at org.apache.atlas.hive.bridge.HiveMetaStoreBridge.registerTable(HiveMetaStoreBridge.java:559)
+< snip>
+at org.apache.atlas.hive.bridge.HiveMetaStoreBridge.main(HiveMetaStoreBridge.java:186)
+Caused by: com.sun.jersey.api.client.ClientHandlerException: java.net.SocketTimeoutException: Read timed out
+at com.sun.jersey.client.urlconnection.URLConnectionClientHandler.handle(URLConnectionClientHandler.java:155)
+Caused by: java.net.SocketTimeoutException: Read timed out
+------------------
+
+Instructions
+In this case we can increate the timeout values for Hive communication with Atlas using the below steps:
+
+
+- On CM UI > Hive and Hive on Tez > Configuration > Hive Service Advanced Configuration Snippet (Safety Valve) for atlas-application.properties"
+> Add below parameters
+atlas.client.connectTimeoutMSecs=300000
+atlas.client.readTimeoutMSec=300000
+
+- Then Restart Hive - Hive on Tez and Atlas
