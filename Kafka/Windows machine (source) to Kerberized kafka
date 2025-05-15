@@ -1,0 +1,62 @@
+Following steps leverages establishing connectivity from windows machine to CDP kafka cluster using kafka clients (Apache kafka binary)
+
+Prerequisites
+kafka version - 2.5.x
+Link for binary - https://kafka.apache.org/downloads
+version downlaoded for testing - kafka_2.12-3.0.0.tgz
+Make sure the ports are opened from windows machine to destination kafka cluster (including KB - 9092, ZK -2181, KDC -88)
+
+Steps to be followed:
+
+1. Export the krb5.ini of the destination cluster
+* Place the krb5.ini on this location C:\Windows\krb5.ini
+* Export the krb5.ini using the following command set KRB5_CONFIG="C:\Windows\krb5.ini"
+
+2. Initialize the keytab and get a vaild token for communication
+Default kerberos client on windows doesnt have much features available
+
+* MIT kerberos package for windows - https://web.mit.edu/kerberos/dist/
+* Location of default windows kerberos client path - C:\Windows\System32\klist
+* Location of custom installed windows kerberos client path - <install-dir>\MIT\Kerberos\bin\klist
+
+Export the env variable in a way that the custom kerberos client path preceeds when you run the clients
+
+3. Export the jaas.conf file
+
+set JAVA_OPTS=-Djava.security.auth.login.config=C:\path\to\jaas.conf
+
+Contents of jaas.conf
+
+KafkaClient {
+com.sun.security.auth.module.Krb5LoginModule required
+useKeyTab=true
+keyTab="C:\path\to\keytab"
+debug=true
+storeKey=true
+useTicketCache=false
+renewTicket=true
+serviceName="kafka"
+principal="Principle@REALM";
+};
+Client {
+com.sun.security.auth.module.Krb5LoginModule required
+useKeyTab=true
+keyTab="C:\path\to\keytab"
+debug=true
+storeKey=true
+useTicketCache=false
+renewTicket=true
+serviceName="zookeeper"
+principal="Principle@REALM";
+};
+
+
+client properties
+
+security.protocol=SASL_PLAINTEXT
+sasl.kerberos.service.name=kafka
+sasl.mechanism=GSSAPI
+
+4. Run the kafka cli commands to publish/consume data from the kafka cluster
+
+C:\path\to\kafka_2.12-2.5.1\bin\Kafka-console-producer.bat --broker-list <kafkabrokerip>:<port>,<kafkabrokerip>:<port>,<kafkabrokerip>:<port> --topic <topic name> --producer.config C:\path\to\client.properties
