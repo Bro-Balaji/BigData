@@ -1,0 +1,53 @@
+Docs for creating external table
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.8/using-hiveql/topics/hive-create-ozone-based-table.html
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.7/using-hiveql/topics/hive-create-ozone-based-table.html
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.8/using-hiveql/topics/hive-ozone-policy.html
+rager policy - https://docs.cloudera.com/cdp-private-cloud-base/7.1.8/using-hiveql/topics/hive-ozone-
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.7/ozone-storing-data/topics/ozone-config-work-with-Hive.htmlpolicy.html
+
+cloudera Recommended Hive configurations when using ozone
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.7/using-hiveql/topics/hive-ozone-recommended-configurations.html
+
+Doc for prometheus and recon ui
+Prometheus
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.9/ozone-storing-data/topics/ozone-prometheus-config.html
+Recon
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.9/ozone-storing-data/topics/ozone-recon-web-ui.html
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.9/ozone-storing-data/topics/ozone-heatmap-steps.html
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.9/ozone-storing-data/topics/ozone-access-recon-web-ui.html ?
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.9/ozone-storing-data/topics/ozone-recon-datanodes-page.html
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.9/health-tests/topics/cm_ht_ozone_recon.html
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.9/ozone-storing-data/topics/ozone-heatmap-concept.html
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.9/metrics/topics/cm_metrics_ozone_prometheus.html
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.9/metrics/topics/cm_metrics_ozone_recon.html
+
+other docs
+raft replication - https://blog.cloudera.com/apache-hadoop-ozone-object-store-architecture
+replication - https://docs.cloudera.com/cdp-private-cloud-base/7.1.8/ozone-storing-data/topics/ozone-erasure-coding1.html
+https://ozone.apache.org/docs/1.0.0/tools.html
+https://ozone.apache.org/docs/1.0.0/concept/ozonemanager.html
+architecture - https://docs.cloudera.com/cdp-private-cloud-base/7.1.8/ozone-overview/topics/ozone-architecture.html
+ssl - https://my.cloudera.com/knowledge/Ozone-Internal-SSL-certificate-expiration?id=358030
+
+ozone official documentation
+https://ozone.apache.org/docs/1.0.0/concept/ozonemanager.html
+
+Best Practices
+
+https://docs.cloudera.com/cdp-private-cloud-upgrade/latest/hdfs-ozone-migration/topics/hdfs-ozone-roles-sizing.html
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.8/ozone-performance-tuning/topics/ozone-performance-tuning-for-ozone.html
+
+Replication
+
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.9/ozone-storing-data/topics/ozone-host-maint-mode.html
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.9/ozone-storing-data/topics/ozone-maint-sc-copies.html
+
+Suggestion by Cloudera
+
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.8/ozone-performance-tuning/topics/ozone-performance-tuning-for-ozone.html
+https://www.baeldung.com/jvm-compressed-oops
+
+Establish connectivity between RFH HDFS to JHN Ozone Via NiFi
+
+https://docs.cloudera.com/cfm/2.0.1/cfm-security/topics/cfm-supported-ports.html
+https://docs.cloudera.com/cdp-private-cloud-base/7.1.9/installation/topics/cdpdc-ports-used-by-runtime.html
