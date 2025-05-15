@@ -1,0 +1,19 @@
+Exception observed
+We observed a scenario with creating external hive table on hdfs encryption zone
+if a user has access to hive table and hdfs location it can fetch the data from underlying hdfs encryption zone (Even if the user doesnt have access to decrypt the data explicitly)
+since the DDL's we perform are getting authenticated using hive user (hive user has decrypt access on all the encryption zone by default)
+
+Solution Proposed
+
+Yes, this is expected behavior. The reason is that the KMS (Key Management Server) policies are independent of the Hadoop SQL policies. When queries are executed through Hive, they are authenticated as the Hive user, allowing access to the underlying HDFS data even if the user lacks explicit decryption permissions.
+
+==>Recommendations.
+
+1./ Restricting Access:
+
+To prevent User B from accessing Hive tables, ensure that no access permissions are granted to the user through Hadoop SQL.
+Alternatively, you can implement an explicit deny policy for User B to restrict access.
+
+2./Use Case Considerations:
+
+If your use case requires allowing access through Hive but not direct access via HDFS commands, carefully design your policies to differentiate between Hive access and HDFS command-level access.
