@@ -1,0 +1,119 @@
+# To create a volume
+
+ozone sh volume create --user=ozone /<volume>
+
+# To create a bucket
+
+ozone sh bucket create /<volume>/<bucket>
+
+# To create a folder inside a bucket
+
+hdfs dfs -mkdir ofs://<nameservice>/<volume>/bucket/<foldername>
+
+# To list the volumes
+
+ozone sh volume ls /
+
+# To list the number of buckets
+
+ozone sh bucket list /<volume>
+
+# To list the folders inside a bucket
+
+hdfs dfs -ls ofs://<namespace>/Volume/
+ozone fs -ls ofs://<namespace>/Volume/
+
+# To get the directory count / file count / content size of any location in ozone
+
+ozone fs -count -q -h -v ofs://<namespace>/volume>/bucket/<foldername>/<keys>
+
+# Data movement between HDFS and ozone
+
+hadoop distcp -Dmapreduce.map.memory.mb=8192 -Dmapred.job.queue.name=root.batch-jobs -skipcrccheck -update -m 100 hdfs://<hostname>:8020/datatmp/customertmp/crmtmp/subscriber_fttxtmp/po/ ofs://<namespace>/customertmp/crmtmp/subscriber_fttxtmp/po/
+
+# Creating external table on top of ozone location
+
+CREATE EXTERNAL TABLE IF NOT EXISTS ozone_based_external_table (
+ID INT,
+name STRING,
+salary DOUBLE,
+designation STRING)
+stored as orc
+LOCATION 'ofs://ozone1/vol1/bucket1/directoryname/table_name/'
+TBLPROPERTIES(‘external.table.purge’=’true’);
+
+
+# To Get the metadata information
+CMUI-> configuration and search for "metadata"
+
+On OM and SCM nodes go to the meta data location and execute below commands,
+
+ozone debug ldb --db=om.db ls
+ozone debug ldb --db=scm.db ls
+Use column_family filter to see each of the table under scm.db and om.db
+
+ozone debug ldb --db=om.db scan --column_family=userTable
+
+ozone debug ldb --db=scm.db scan --column_family=containers
+
+# To change the ozone default container size
+
+<property>
+<name>ozone.scm.container.size</name>
+<value>5GB</value>
+<tag>OZONE, PERFORMANCE, MANAGEMENT</tag>
+<description>
+</description>
+</property>
+
+
+
+# To Find OM leader and Followers
+
+ozone admin om roles --service-id=
+
+# To Find SCM leader and Followers
+
+ozone admin scm roles
+
+# To List the Datanodes
+
+ozone admin datanode list
+
+# To Check the container Report
+
+ozone admin container report
+
+# To Check list of Containers
+
+ozone admin container list --count=10000000
+
+# To Check Ozone Datanode usage
+
+ozone admin datanode usageinfo -c=5 -m
+ozone admin datanode usageinfo --json
+
+# To Check Container Balancer status
+
+ozone admin containerbalancer status
+
+# To start Container Balancer
+
+ozone admin containerbalancer start
+
+ozone admin containerbalancer start --threshold=1 --max-datanodes-percentage-to-involve-per-iteration=100
+
+ozone admin containerbalancer start --threshold=1 --max-datanodes-percentage-to-involve-per-iteration=100 --max-size-entering-target-in-gb=200 --iterations=500 --max-size-leaving-source-in-gb=100
+
+# To List the pipelines
+
+ozone admin pipeline list
+
+# To Check the safe mode of SCM
+
+ozone admin safemode status --verbose
+
+# To List the certs
+
+ozone admin cert list -r=scm
+
