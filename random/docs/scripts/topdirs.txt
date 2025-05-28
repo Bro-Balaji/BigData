@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Get the top 5 largest directories in /tmp
+output=$(du -h /tmp/* 2>/dev/null | sort -rh | head -n 5)
+# Combine the results
+message=""
+count=1
+if [ ! -z "$output" ]; then
+    message+="Top 5 Largest Directories in /tmp"
+    message+="<br /><br />"
+    while read -r line; do
+        message+="<b>[$count]</b> $line<br />"
+        ((count++))
+    done <<< "$output"
+fi
+export https_proxy= && export http_proxy=
+
+
+# Post the message to the webhook if there is a message to send
+if [ ! -z "$message" ]; then
+    echo "Sending message:"
+    echo "$message"  # This includes <br /> tags for line breaks
+    curl -X POST -H "Content-Type: application/json" -d "{\"text\": \"$message\"}" ""
+fi

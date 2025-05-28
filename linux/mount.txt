@@ -1,0 +1,36 @@
+Lsblk
+mkdir -p /data
+Chmod -R 755 /data
+mkfs -t ext4 /dev/vdb
+mkfs -t ext4 /dev/vdc
+Mount /dev/vdb /data
+
+Df -kh
+vim /etc/fstab
+
+
+vim tutorial
+H - start of the page
+M - middle of the page
+G - end of the page
+cw - change word  AND ENTER INTO INSERT MODE
+ci", ci{}, chnage insde curly brackets or ""
+ZQ - quit without save
+ZZ - save and quit
+yy -yank a line and p to paste it
+:%s/jio/ioi/g - to sub words in entire line (s -static , g entire para )
+:Ex - to move into other directories
+if u are in any path use gf to move into the path
+
+cntrl +o to move back to previous histroy of editing
+
+cntrl +i to move forward to previous histroy of editing
+:r!<commands which you want to execute>
+!!sh to run a cmd inside a script
+:sav <save the file with a new name >
+:sp <filename > splits horizontallly
+:vs <filename splits vertically> cntrl+w left or right ker works
+:g/^\s*$/d -  remove all the blank lines
+n - to move forward
+N - to move backward
+/left\+right to search for two words in aline

@@ -1,0 +1,6 @@
+1 - Mark topic for deletion
+2 - Login to zookeeper
+3 - addauth digest super:super123
+4 - rmr /brokers/topics/topic_name
+5 - rmr /admin/deleted_topics/topic_name
+6 - List down the topics

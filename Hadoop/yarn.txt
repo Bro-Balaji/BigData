@@ -1,0 +1,14 @@
+#!/bin/bash
+# Check if the cluster timestamp is provided as an argument
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <cluster-timestamp>"
+    exit 1
+fi
+# Extract the cluster timestamp from the argument
+cluster_timestamp=$1
+# Convert the cluster timestamp to a human-readable date and time
+actual_time=$(date -d "@$(($cluster_timestamp / 1000))" "+%Y-%m-%d %H:%M:%S")
+# Print the result
+echo "Cluster Timestamp: $cluster_timestamp"
+echo "Actual Time: $actual_time"
+ 

@@ -1,0 +1,25 @@
+#!/bin/bash
+overall_status=0
+service_name="Keytab Files Check"
+status_detail=""
+mount_points=($(mount | grep /dev/v | awk '{print $3}'))
+count=0  # Initialize the count of keytab files
+for dir in "${mount_points[@]}"; do
+    keytab_files=$(find "$dir" -type f -name "*.keytab" 2>/dev/null)
+    for keytab_file in $keytab_files; do
+        if [[ $keytab_file == <dirname>* || $keytab_file == <dirname>* ]]; then
+            continue
+        else
+            ((count++))
+            status_detail+=" $count) $keytab_file\\n"
+            overall_status=2
+        fi
+    done
+done
+if [ $count -gt 0 ]; then
+    status_detail="CRITICAL - Keytab files found outside of <dirname> and <dirname>:\\n$status_detail"
+else
+    status_detail="OK - No keytab files found outside of <dirname> and <dirname>"
+fi
+echo "$overall_status \"$service_name\" - $status_detail"
+exit $overall_status

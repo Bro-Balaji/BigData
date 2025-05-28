@@ -1,0 +1,15 @@
+curl -u elastic -XPUT "http://<esnode>:9200/my_index/_doc/1" -H 'Content-Type: application/json' -d '{
+  "name": "John Doe",
+  "age": 30,
+  "email": "john.doe@example.com"
+}'
+
+
+
+curl -u elastic -X GET "http://<esnode>:9200/_cat/indices"
+
+curl -u elastic -XPUT "http://<esnode>:9200/test" -H 'Content-Type: application/json' -d'{  "settings": {    "number_of_shards": 5,    "number_of_replicas": 1  }}'
+
+curl -u elastic -XPUT "http://<esnode>:9200/test" -H 'Content-Type: application/json' -H 'Authorization: Basic ' -d'{  "settings": {    "number_of_shards": 5,    "number_of_replicas": 1  }}'
+
+ 

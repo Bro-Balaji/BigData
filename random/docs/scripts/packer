@@ -1,0 +1,42 @@
+{
+    "builders": [
+        {
+            "type": "openstack",
+            "application_credential_name": "Test",
+            "application_credential_id": "",
+            "application_credential_secret": "",
+            "identity_endpoint": "",
+            "region": "regionOne",
+            "tenant_name": "",
+            "tenant_id": "",
+            "volume_size": "50",
+            "flavor": "",
+            "use_blockstorage_volume": true,
+            "domain_name": "",
+            "image_name": "",
+            "ssh_username": "centos",
+            "ssh_port": "22",
+            "ssh_private_key_file": "",
+            "ssh_keypair_name": "",
+            "ssh_agent_auth": false,
+            "ssh_timeout": "2m",
+            "security_groups": "",
+            "source_image": "",
+            "ssh_ip_version": "4",
+            "networks": [
+                ""
+            ]
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "file",
+            "source": "",
+            "destination": "/etc/systemd/system"
+        },
+        {
+            "type": "shell",
+            "script": ""
+        }
+            ]
+}

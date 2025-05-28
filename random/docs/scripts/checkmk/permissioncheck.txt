@@ -1,0 +1,21 @@
+#!/bin/bash
+directory="<dir name>"
+permission="400"
+invalid_files=$(find "$directory" -type f ! -perm "$permission")
+overall_status=0  # Assume OK by default
+service_name="File Permissions Check"
+status_detail=""
+count=0  # Initialize the count of files
+for file in $invalid_files; do
+    file_permissions=$(stat -c %a "$file")
+    ((count++))
+    status_detail+=" $count) $file_permissions - $file\\n"  # Use '\\n' for line break
+    overall_status=2
+done
+if [ -n "$invalid_files" ]; then
+    status_detail="CRITICAL - Files with incorrect permissions [check on the summary for more details] :\\n$status_detail"  # Use '\\n' for line break
+else
+    status_detail="OK - All files have correct permissions"
+fi
+echo "$overall_status \"$service_name\" - $status_detail"
+exit $overall_status
