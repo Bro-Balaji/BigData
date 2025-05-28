@@ -2,3 +2,8 @@ to find the serial no of a server - sudo dmidecode -s system-serial-number
 curl -i "http://<hostname>:50070/webhdfs/v1/user/root?op=LISTSTATUS" - accessing webhdfs
 export HADOOP_OPTS="-Dsun.security.krb5.debug=true"
 export HADOOP_ROOT_LOGGER=DEBUG,console
+yarn rmadmin -getAllServiceState
+authconfig --enablemkhomedir --update
+authconfig --enablesssdauth --update
+hdfs dfsadmin -listOpenFiles -blockingDecommission
+hdfs debug recoverLease  -path <path> -retries 10
