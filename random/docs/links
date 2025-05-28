@@ -27,3 +27,31 @@ https://github.com/hclpandv/devops-training-material/blob/main/kubernetes/k8s-in
 https://harsh05.medium.com/decoding-container-runtimes-exploring-oci-cri-docker-cri-o-and-the-evolution-of-kubernetes-44f49f2f8f2f
 https://medium.com/@mehmetodabashi/backup-and-restore-etcd-cluster-on-kubernetes-93c19b1c070
 https://aungzanbaw.medium.com/a-step-by-step-guide-to-creating-users-in-kubernetes-6a5a2cfd8c71
+https://github.com/kelseyhightower/kubernetes-the-hard-way
+https://www.chaosgenius.io/blog/spark-on-kubernetes/
+https://wheregoes.com/
+https://community.databricks.com/t5/technical-blog/ray-monitoring-made-easy-prometheus-amp-grafana-with-ray-on/ba-p/108641
+https://github.com/rayalex/spark-databricks-observability/blob/main/scripts/init-pyroscope.sh
+https://community.databricks.com/t5/technical-blog/ci-cd-integration-with-databricks-workflows/ba-p/81821
+
+Error	URL
+Resource Exhausted	https://devops-diaries.beehiiv.com/p/resource-exhausted-error-in-kubernetes
+CrashLoop BackOff	https://devops-diaries.beehiiv.com/p/troubleshoot-and-fix-kubernetes-crashloopbackoff-error
+OOMKilled	https://devops-diaries.beehiiv.com/p/troubleshoot-and-fix-kubernetes-oomkilled-error-3
+Node NotReady	https://devops-diaries.beehiiv.com/p/troubleshoot-and-fix-in-kubernetes-node-not-ready-error-4
+Gateway Timeout	https://devops-diaries.beehiiv.com/p/troubleshoot-and-fix-in-kubernetes-gateway-timeout-error-5
+Connection Refused	https://devops-diaries.beehiiv.com/p/troubleshoot-and-fix-in-kubernetes-connection-refused-error-6
+ImagePull Backoff	https://devops-diaries.beehiiv.com/p/imagepullbackoff-error-troubleshoot-and-fix-7
+Scaling Timeout	https://devops-diaries.beehiiv.com/p/error-8scaling-timeout-troubleshoot-and-fix
+Init Container	https://devops-diaries.beehiiv.com/p/error-9-init-container-error-troubleshooting-and-fix
+Sidecar Container Failed	https://devops-diaries.beehiiv.com/p/error-10-sidecar-container-failed-troubleshoot-and-fix
+CNI Error	https://devops-diaries.beehiiv.com/p/error-11-cni-error-troubleshoot-and-fix
+Service Discovery Error	https://devops-diaries.beehiiv.com/p/error-12-service-discovery-failure-error-troubleshoot-and-fix
+PodSecurity Policy Violation	https://devops-diaries.beehiiv.com/p/error-13-podsecurity-policy-violation-troubleshoot-and-fix
+Resource Quota Exceeded	https://devops-diaries.beehiiv.com/p/error-14-resource-quota-exceeded-error-troubleshoot-and-fix
+Cluster Autoscaler Failure	https://devops-diaries.beehiiv.com/p/error-15-cluster-autoscaler-failure-error-troubleshoot-and-fix
+Pod Termination Timeout	https://devops-diaries.beehiiv.com/p/error-16-pod-termination-timeout-troubleshoot-and-fix
+Node OutofDisk	https://devops-diaries.beehiiv.com/p/error-17-nodeoutofdisk-error-troubleshoot-and-fix
+Deployment NotFound	https://devops-diaries.beehiiv.com/p/error-18-deployment-not-found-error-troubleshoot-and-fix
+Pod Invalid	https://devops-diaries.beehiiv.com/p/error-19-pod-invalid-error-troubleshoot-and-fix
+Kubelet NotReady	https://devops-diaries.beehiiv.com/p/error-20-kubelet-notready-troubleshoot-and-fix

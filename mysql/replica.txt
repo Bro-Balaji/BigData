@@ -1,0 +1,17 @@
+Step1:
+show master status;
+
+Step1:
+reset master;
+show master status;
+
+Step1:
+On MySQL Server to make SLAVE:
+CHANGE REPLICATION SOURCE TO
+SOURCE_HOST='<hostname_of_master_node>',
+SOURCE_USER='<replica_user_name>',
+SOURCE_PASSWORD='<replica_password>',
+SOURCE_LOG_FILE='<log_file_name_from_show_master_command>',
+SOURCE_LOG_POS=<log_file_position_from_show_master_command>;
+start replica;
+show replica status\
