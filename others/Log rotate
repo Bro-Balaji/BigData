@@ -1,0 +1,23 @@
+The function of log rotation is to manage log files by periodically rotating or archiving them to prevent them from growing indefinitely and consuming excessive disk space. It will only keep minimum number of files instead of storing lot of old files.
+
+File will be there at /etc/logrotate.d/sssd
+
+Problem Faced: It was writing log due to a particular error the log file was 17GB and we got a filesystem alert on / ,since log was writing onto /var/log.
+
+So we decided to rotate log file once it reaches 500 MB and keeping upto 2 rotated log files.
+
+Below is the modified script according to our requirement.
+
+/var/log/sssd/*.log {
+    maxsize 500M
+    daily
+    missingok
+    notifempty
+    sharedscripts
+    rotate 2
+    compress
+    immediate
+    postrotate
+        /bin/kill -HUP `cat /var/run/sssd.pid  2>/dev/null`  2> /dev/null || true
+    endscript
+}
