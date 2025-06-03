@@ -1,0 +1,18 @@
+While running Hive Queries , the query failed with error
+Vertex vertex_ [Reducer 2] killed/failed due to:OTHER_VERTEX_FAILURE]DAG did not succeed due to VERTEX_FAILURE. failedVertices:1 killedVertices:1
+Solution
+
+Check the Permission of /data/hdfs1*/yarn/nm/ directory
+
+In our case the ownership of this directory was with yarn:yarn so this is causing the issue
+
+Change the Permission of the /data/hdfs1*/yarn/nm/ to yarn:hadoop using below command
+chown yarn:hadoop /data/hdfs1*/yarn/nm (Change in all the nodemanager servers)
+
+Stop the YARN Service in the cloudera manager
+
+After this delete the folders and files inside usercache directory using rm -rf /data/hdfs1*/yarn/nm/usercache/*
+
+Start the YARN Service in Cloudera Manager
+
+Run the hive query again and it will work
