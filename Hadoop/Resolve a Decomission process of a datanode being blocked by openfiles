@@ -1,0 +1,11 @@
+This document will explain how to recover files which any host going to be enabled for maintenance node and at hdfs step while stopping the datanode it get blocked.
+
+Login to active namenode and identify the file which are open and blocking the datanode decom.
+
+hdfs dfsadmin -listOpenFiles -blockingDecommission
+
+hdfs debug recoverLease -path <filename> -retries 10
+
+Verify no open files should be present.
+
+hdfs dfsadmin -listOpenFiles -blockingDecommission

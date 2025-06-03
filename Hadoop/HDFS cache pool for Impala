@@ -1,0 +1,14 @@
+Reference -
+
+https://impala.apache.org/docs/build/html/topics/impala_perf_hdfs_caching.html
+
+https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/CentralizedCacheManagement.html
+
+hdfs cacheadmin -addPool <pool name> -owner impala -limit 4000000000
+
+
+hdfs cacheadmin -listPools
+
+hdfs cacheadmin -modifyPool <pool name> -maxTtl 30m
+
+hdfs cacheadmin -listPools
