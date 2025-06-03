@@ -1,0 +1,2 @@
+authconfig --enablemkhomedir --update
+authconfig --enablesssdauth --update
