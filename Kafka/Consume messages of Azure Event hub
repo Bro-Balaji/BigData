@@ -1,0 +1,45 @@
+https://github.com/Azure/azure-event-hubs-for-kafka/blob/master/quickstart/kafka-cli/README.md
+
+Get the connection string and credentials for your cluster
+export AZURE_SUBSCRIPTION=
+export AZURE_RESOURCE_GROUP=
+export AZURE_LOCATION=
+export EVENT_HUBS_NAMESPACE=
+export EVENT_HUB_NAME=
+
+az eventhubs namespace authorization-rule list --resource-group $AZURE_RESOURCE_GROUP --namespace-name $EVENT_HUBS_NAMESPACE
+
+
+Make use of the rule name to extract the connection string
+
+The authorization rule name is the value of the name attribute (without the quotes), which in this case is RootManageSharedAccessKey
+
+az eventhubs namespace authorization-rule keys list --resource-group $AZURE_RESOURCE_GROUP --namespace-name $EVENT_HUBS_NAMESPACE --name $EVENT_HUB_AUTH_RULE_NAME
+
+
+Below steps need to be executed on the On-Prem Kafka node
+
+Create a jaas.conf file on the kafka node and update the password field in the jaas.conf with the primary connection string
+
+username with have the same variable defined as below i.e. $ConnectionString. Change only the value of the password which will be the "primaryConnectionString" from above json.
+
+KafkaClient {
+    org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password="Endpoint=sb://<endpoint>/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=<<PRI_SHARED_ACCESS_KEY>>";
+};
+
+Connect to Event Hubs using Kafka CLI
+
+export EVENT_HUBS_NAMESPACE=
+export EVENT_HUB_NAME=
+export KAFKA_OPTS="-Djava.security.auth.login.config=jaas.conf"
+export KAFKA_INSTALL_HOME=
+
+cat client_common.properties
+
+security.protocol=SASL_SSL
+sasl.mechanism=PLAIN
+
+
+To consume the latest messages run the below command
+
+$KAFKA_INSTALL_HOME/bin/kafka-console-consumer.sh --topic $EVENT_HUB_NAME --bootstrap-server $EVENT_HUBS_NAMESPACE.servicebus.windows.net:9093 --consumer.config client_common.properties

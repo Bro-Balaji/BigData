@@ -1,0 +1,100 @@
+
+yum install krb5-server
+yum install krb5-workstation
+yum install krb5-libs
+
+
+configuring local kdc server
+kdc.conf
+once the required packages are installed go to /var/kerberos/krb5kdc and edit the following files
+Take a backup of the original file
+Then in the kdc.conf add the below lines and change the required parameters accordingly
+
+
+[kdcdefaults]
+ kdc_ports = {{ kdc_port }}
+ kdc_tcp_ports = {{ kdc_port }}
+
+[realms]
+ {{ realm_name|upper() }} = {
+  #master_key_type = aes256-cts
+  acl_file = {{ kadm5_acl_path }}
+  dict_file = /usr/share/dict/words
+  admin_keytab = {{ kadm5_keytab }}
+  supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
+ }
+
+change the kdc ports and kdc_tcp_ports to 88
+and in {{ realm_name|upper() }} add your realm which you want to use for the cluster
+give the acl_file location which is /var/kerberos/krb5kdc/kadm5.acl (which you will be creating certainly)
+for the admin keytab you can have the location /var/kerberos/krb5kdc/kadm5.keytab (The keytab necessarily doesnt need to be there)
+
+
+kadm5.acl
+once it is done you have to edit the kadm5.acl as follows add the realm of the cluster here (by default it will be root make the changes accordingly)
+
+
+krb5.conf
+Once it is completed we have to edit thr krb5.conf file accordingly
+Take a backup of the file before making any changes
+
+Add the krb5.conf parameters in krb5.conf and make the changes accordingly
+
+
+
+# Configuration snippets may be placed in this directory as well
+includedir /etc/krb5.conf.d/
+
+[logging]
+ default = FILE:/var/log/krb5libs.log
+ kdc = FILE:/var/log/krb5kdc.log
+ admin_server = FILE:/var/log/kadmind.log
+
+[libdefaults]
+ dns_lookup_realm = false
+ ticket_lifetime = 24h
+ renew_lifetime = 7d
+ forwardable = true
+ rdns = false
+ pkinit_anchors = FILE:/etc/pki/tls/certs/ca-bundle.crt
+ default_realm = {{ realm_name|upper() }}
+
+[realms]
+   {{ realm_name|upper() }} = {
+   kdc = {{ groups['kerberosserver'][0] }}
+   admin_server = {{ groups['kerberosserver'][0] }}
+  }
+
+[domain_realm]
+ .{{ realm_name|lower() }} = {{ realm_name|upper() }}
+ {{ realm_name|lower() }} = {{ realm_name|upper() }}
+
+
+
+
+here in the default_realm add the realm of your cluster
+And in realms sections
+Add your realm and the kdc server hostname and admin_server which will be same as your kdc serevr
+And in domain_realm add the realm of the cluster accordingly
+
+
+
+Initializing the local KDC server
+Start the local kdc server
+
+Here instead of giving the password directly we are storing it in a variable and calling it from the variable
+read -a pass
+And enter the password for the kdc server (Avoid more special characters)'
+kdb5_util -P $pass create -s
+
+
+
+starting the local KDC server
+Once the configurations are set in place start the kdc server
+systemctl start krb5kdc
+
+
+systemctl start kadmin
+
+You will be able to login into your local kdc server using
+kadmin.local

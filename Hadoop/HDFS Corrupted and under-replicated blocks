@@ -1,0 +1,28 @@
+To list corrupted blocks in HDFS
+hdfs fsck -list-corruptfileblocks -includeSnapshots > /tmp/fsck.txt
+
+Get the replication of a hdfs block. BlockID will be found from fsck command output.
+
+hdfs fsck -blockId <block id> -details -locations -files
+
+Corrupted HDFS Blocks and Fix
+
+The dfsadmin –metasave Command.
+
+The dfsadmin –metasave command provides more information than that provided by the dfsadmin –report command. This command gets you various block-related pieces of information such as:
+
+Total number of blocks
+Blocks waiting for replication
+Blocks that are currently being replicated
+
+When you run the dfsadmin –metasave command, it creates a file in the /var/log/ hadoop-hdfs directory on the server where you executed the command.
+
+hdfs dfsadmin -metasave metasave.out
+
+Fix the corrupted blocks
+
+hdfs debug recoverLease -path <file name> -retries 3
+
+Fix the under replicated block
+
+hdfs fsck -blockId <block id> -details -locations -files
