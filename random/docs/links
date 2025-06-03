@@ -33,6 +33,7 @@ https://wheregoes.com/
 https://community.databricks.com/t5/technical-blog/ray-monitoring-made-easy-prometheus-amp-grafana-with-ray-on/ba-p/108641
 https://github.com/rayalex/spark-databricks-observability/blob/main/scripts/init-pyroscope.sh
 https://community.databricks.com/t5/technical-blog/ci-cd-integration-with-databricks-workflows/ba-p/81821
+https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
 
 Error	URL
 Resource Exhausted	https://devops-diaries.beehiiv.com/p/resource-exhausted-error-in-kubernetes

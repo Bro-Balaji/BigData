@@ -1,0 +1,23 @@
+For Spark streaming Jobs
+
+Developers should mention this additional parameter "spark.yarn.log-aggregation-enable" to be set to "false" in their spark submit command. And this should disable the log aggregation at the job level.
+--conf spark.yarn.log-aggregation-enable=false
+For Non-streaming Spark jobs
+
+On Spark service in Cloudera Manager, let us validate and check these parametric values.
+
+spark.yarn.executor.logs.rolling.enable - Default is False. Let us enable rolling to have control over the log files if not done.
+spark.yarn.executor.logs.rolling.interval - Default is 60 Minutes. We could reduce this to every 30 or 20 or 10 minutes based on log file size.
+spark.yarn.log-aggregation.max-log-size - Default size is 100 MB. Let us reduce this size to say 10 MB, 20 MB or 50 MB to ensure log aggregation does not time out handling smaller files.
+spark.yarn.executor.logs.rolling.maxRetainedFiles - Default count is 5 files. We can increase or decrease based on our requirement. if we set this parameter, only the most recent log files (based on the number of rolled files configured) will be aggregated.
+spark.yarn.executor.logs.rolling.keepCompressedFiles - if we set this to false, prevents compression and speeds up log aggregation. (decompression time is saved)
+
+Along with these above parameter, let us also ensure we are only logging WARN or ERROR Messages in logs so that the minimal logs are written to the log.
+
+In Log4j properties of Spark, modify the below property
+from log4j.rootCategory=INFO, console
+to log4j.rootCategory=WARN, console
+Alternatively, if we want to enable this across the entire cluster which includes Spark Jobs & Hive Jobs, this can be defined at YARN level.
+
+yarn.log-aggregation.max-log-size
+It controls the maximum size of logs that can be aggregated by YARN after an application finishes running. YARN will not aggregate logs larger than this size. This ensures that large logs are either truncated or not aggregated at all, preventing excessive log sizes from being stored.-
