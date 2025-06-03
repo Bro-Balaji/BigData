@@ -1,0 +1,8 @@
+Problem statement - Kerberos ticket expires within few hours.
+From KDC server we notice below principal has "Maximum renewable life" as 0 days which is a problem. This will immediately expire the ticket after initiating.
+
+
+getprinc krbtgt/ABC.COM@ABC.COM
+
+
+modprinc -maxlife 1days -maxrenewlife 90days +allow_renewable krbtgt/ABC.COM@ABC.COM
