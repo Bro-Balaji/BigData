@@ -1,0 +1,15 @@
+set hive.server2.tez.default.queues=<queue name>;
+set hive.server2.enable.doAs=true;
+set hive.metastore.uris=thrift://<thrift server host>:9083;
+set hive.server2.transport.mode=binary;
+set hive.server2.zookeeper.namespace=<namespace>;
+set tez.queue.name=<queue name>;
+set beeline.hs2.jdbc.url.hive_on_tez=<jdbc url to connect to hive>;
+set hive.privilege.synchronizer=false;
+set mapred.reduce.tasks=50;
+set tez.runtime.io.sort.mb=800;
+set tez.grouping.split-count=40;
+set hive.tez.container.size=4096;
+set tez.grouping.max-size=268435456;
+set tez.grouping.min-size=16777216;
+set tez.task.resource.memory.mb=2048;
