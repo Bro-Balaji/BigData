@@ -1,0 +1,69 @@
+This document is to explain how services  is going to pick the latest updated JDK in all  Environments.
+
+Login to one of the server individually and download the Oracle JDK latest version from official site.
+JDK download site : https://www.oracle.com/in/java/technologies/downloads/
+
+untar it on desired location and move the policy files(JCE Policies) [(/usr/java/jdk1.8.0_371/jre/lib/seecurity/) local_policy.jar & US_export_policy.jar] from old JDK version to new jdk version on the same location.
+
+And move cacerts file from old JDK version from /usr/java/jdk1.8.0_371/jre/lib/seecurity/cacerts to the new JDK version which contains all the root certificates so that we do not repeat the steps of importing certificates on to the cacerts file.
+
+Now tar this jdk where the JCE policy jars and cacerts files are placed and using a for loop send it across to all nodes.
+
+For loop :
+
+for i in 'all node' ; do scp -rp /usr/java/jdk1.8.0_371.tar.gz $i:/usr/java; done
+
+Now login to all nodes and follow below steps to point the java to latest version.
+
+alternatives --install /usr/bin/java java /opt/java/jdk1.8.0_333/bin/java
+
+alternatives --config java
+
+alternatives --install /usr/bin/jar jar /opt/java/jdk1.8.0_333/bin/jar
+
+alternatives --install /usr/bin/javac javac /opt/java/jdk1.8.0_333/bin/javac
+
+alternatives --set jar /opt/java/jdk1.8.0_333/bin/jar
+
+alternatives --set javac /opt/java/jdk1.8.0_333/bin/javac
+
+Post these steps if we do java -version it should point to new version.
+
+If we want we can export the latest JAVA path aswell.
+
+export JAVA_HOME=/usr/java/jdk1.8.0_333 && export JRE_HOME=/usr/java/jdk1.8.0_333/jre && export PATH=$PATH:/usr/java/jdk1.8.0_333/bin:/usr/java/jdk1.8.0_333/jre/bin
+
+
+To remove previous alternates from java follow below commands.
+
+There are 3 choices for the alternative java (providing /usr/bin/java).
+
+
+     Selection    Path                                     Priority   Status
+    ------------------------------------------------------------
+      0            /usr/lib/jvm/java-6-oracle/jre/bin/java   3         auto mode
+    * 1            /usr/lib/jvm/java-6-oracle/jre/bin/java   3         manual mode
+      2            /usr/lib/jvm/java-7-oracle/jre/bin/java   2         manual mode
+      3            /usr/lib/jvm/java-8-oracle/jre/bin/java   1         manual mode
+
+    Press <enter> to keep the current choice[*], or type selection number:
+
+
+
+    Now remove existing symbolic links first
+
+    sudo update-alternatives --remove "javac" "/usr/lib/jvm/java-7-oracle/jre/bin/javac"
+    sudo update-alternatives --remove "javac" "/usr/lib/jvm/java-6-oracle/jre/bin/javac"
+
+    NOTE:
+
+    1. Use the above mentioned commands carefully, always check whether any service/process is making use of the particular java version.
+    2. The service might fail if we remove the java version if is service are using it.
+
+    Documents Referred :
+
+    https://docs.cloudera.com/cdp-private-cloud-upgrade/latest/upgrade-cdh/topics/ug_jdk8.html
+
+    https://docs.cloudera.com/documentation/enterprise/latest/topics/cm_ig_java_home_location.html
+
+    https://docs.cloudera.com/cdp-private-cloud-upgrade/latest/release-guide/topics/cdpdc-java-requirements.html 
