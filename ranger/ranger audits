@@ -1,0 +1,93 @@
+create database ranger_audits;
+
+CREATE EXTERNAL TABLE `zd_ranger_audits`(
+      `resource` string ,
+      `restype` string ,
+      `requser` string ,
+      `evttime` timestamp ,
+      `policy` int ,
+      `access` string ,
+      `result` int ,
+      `reason` string ,
+      `enforcer` string ,
+      `repotype` int ,
+      `repo` string ,
+      `cliip` string ,
+      `action` string ,
+      `agenthost` string ,
+      `logtype` string ,
+      `tags` array<string> ,
+      `id` string )
+    PARTITIONED BY (
+      `component` string,
+      `evtdate` string)
+    ROW FORMAT SERDE
+      'org.apache.hadoop.hive.serde2.JsonSerDe'
+    WITH SERDEPROPERTIES (
+      'ignore.malformed.json'='true')
+    STORED AS INPUTFORMAT
+      'org.apache.hadoop.mapred.TextInputFormat'
+    OUTPUTFORMAT
+      'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+    LOCATION                                             'hdfs://<namespace>/warehouse/tablespace/external/hive/ranger_audits.db/ranger_audits'';
+
+    CREATE TABLE `zd_ranger_audits_o`(
+            `resource` string,
+            `restype` string,
+            `requser` string,
+            `evttime` timestamp,
+            `policy` int,
+            `access` string,
+            `result` int,
+            `reason` string,
+            `enforcer` string,
+            `repotype` int,
+            `repo` string,
+            `cliip` string,
+            `action` string,
+            `agenthost` string,
+            `logtype` string,
+            `tags` array<string>,
+            `id` string)
+          PARTITIONED BY (
+            `component` string,
+            `evtdate` string)
+          ROW FORMAT SERDE
+            'org.apache.hadoop.hive.ql.io.orc.OrcSerde'
+          STORED AS INPUTFORMAT
+            'org.apache.hadoop.hive.ql.io.orc.OrcInputFormat'
+          OUTPUTFORMAT
+            'org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat'
+          LOCATION 'hdfs://<namespace>/warehouse/tablespace/external/hive/ranger_audits.db/ranger_audits_o';
+
+
+date1=$(date +%Y-%m-%d)
+date2=$(date +%Y%m%d)
+retention=$(date -d "retention" +"%Y-%m-%d")
+echo $retention
+##kinit for user
+
+kinit -kt /app/app_keytabs/
+klist
+echo $date1
+echo $date2
+
+beeline -u "jdbc:hive2://<jdbcurl>?tez.queue.name=queue.name" -e "
+ALTER TABLE zd_ranger_audits.zd_ranger_audits ADD IF NOT EXISTS PARTITION (component='atlas', evtDate='$date1') LOCATION '/ranger/audit/atlas/atlas/$date2';
+ALTER TABLE zd_ranger_audits.zd_ranger_audits ADD IF NOT EXISTS PARTITION (component='hdfs', evtDate='$date1') LOCATION '/ranger/audit/hdfs/hdfs/$date2';
+ALTER TABLE zd_ranger_audits.zd_ranger_audits ADD IF NOT EXISTS PARTITION (component='hiveServer2', evtDate='$date1') LOCATION '/ranger/audit/hive/hiveServer2/$date2';
+ALTER TABLE zd_ranger_audits.zd_ranger_audits ADD IF NOT EXISTS PARTITION (component='hiveMetastore', evtDate='$date1') LOCATION '/ranger/audit/hive/hiveMetastore/$date2';
+ALTER TABLE zd_ranger_audits.zd_ranger_audits ADD IF NOT EXISTS PARTITION (component='impala', evtDate='$date1') LOCATION '/ranger/audit/impala/impala/$date2';
+ALTER TABLE zd_ranger_audits.zd_ranger_audits ADD IF NOT EXISTS PARTITION (component='knox', evtDate='$date1') LOCATION '/ranger/audit/knox/knox/$date2';
+ALTER TABLE zd_ranger_audits.zd_ranger_audits ADD IF NOT EXISTS PARTITION (component='yarn', evtDate='$date1') LOCATION '/ranger/audit/yarn/yarn/$date2';
+ALTER TABLE zd_ranger_audits.zd_ranger_audits DROP PARTITION (evtDate < '$retention');
+ALTER TABLE zd_ranger_audits.zd_ranger_audits_o DROP PARTITION (evtDate < '$retention');
+msck repair table zd_ranger_audits.zd_ranger_audits;
+INSERT OVERWRITE TABLE zd_ranger_audits.zd_ranger_audits_o PARTITION(component, evtdate) SELECT * FROM zd_ranger_audits.zd_ranger_audits where evtdate='$date1' and component ='atlas';
+INSERT OVERWRITE TABLE zd_ranger_audits.zd_ranger_audits_o PARTITION(component, evtdate) SELECT * FROM zd_ranger_audits.zd_ranger_audits where evtdate='$date1' and component ='yarn';
+INSERT OVERWRITE TABLE zd_ranger_audits.zd_ranger_audits_o PARTITION(component, evtdate) SELECT * FROM zd_ranger_audits.zd_ranger_audits where evtdate='$date1' and component ='knox';
+INSERT OVERWRITE TABLE zd_ranger_audits.zd_ranger_audits_o PARTITION(component, evtdate) SELECT * FROM zd_ranger_audits.zd_ranger_audits where evtdate='$date1' and component ='impala';
+INSERT OVERWRITE TABLE zd_ranger_audits.zd_ranger_audits_o PARTITION(component, evtdate) SELECT * FROM zd_ranger_audits.zd_ranger_audits where evtdate='$date1' and component ='hiveMetastore';
+INSERT OVERWRITE TABLE zd_ranger_audits.zd_ranger_audits_o PARTITION(component, evtdate) SELECT * FROM zd_ranger_audits.zd_ranger_audits where evtdate='$date1' and component ='hiveServer2';
+INSERT OVERWRITE TABLE zd_ranger_audits.zd_ranger_audits_o PARTITION(component, evtdate) SELECT * FROM zd_ranger_audits.zd_ranger_audits where evtdate='$date1' and component ='hdfs';
+msck repair table zd_ranger_audits.zd_ranger_audits_o;
