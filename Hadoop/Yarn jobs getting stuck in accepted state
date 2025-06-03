@@ -1,0 +1,19 @@
+When checked on nodes on yarn UI ,all nodes where showing 0 vCores available eventhough just 3 or 4 jobs were running.
+
+Notes:
+
+From RM log we could see nodemanagers have 0 vCore available. So, UI was not showing the wrong info.
+Then, we login to a nodemanager's host and found there are stale containers processes.
+We killed all the processes and cleared the nodemanager statestore and nodemanager local cache directory. After restarting the nodemanger stared showing the current values.
+To get the stale containers process ID
+
+ps -ef|grep container |grep -v grep |awk '{print $2}'
+To clear nodemanager statestore and nodemanager local cache directory
+
+rm -rf /data/hdfsdata*/yarn/nm/*
+rm-rf /var/lib/hadoop-yarn/yarn-nm-recovery/*
+Cloudera Solution :
+
+Kill all the running applications and stop all nodemanagers and follow the above steps.
+
+According to Cloudera this is a permanent fix shouldn't happen again in future ,and further the cluster will be monitored for 2 - 3 days.
