@@ -1,0 +1,31 @@
+Description
+Steps to enable Hive Last Access Time
+
+Step 1
+Edit the Hive on tez configuration
+
+Look for hive_hs2_config_safety_valve
+Search for hive_hs2_config_safety_valve property and add the following lines.
+
+Add the following config values.
+Note: If you have multiple Hive Server Config groups, You need to add these to each of the hiveserver config groups.
+
+Name : hive.exec.pre.hooks Value : org.apache.hadoop.hive.ql.hooks.UpdateInputAccessTimeHook$PreExec Description : Property to get hive table last access time
+
+Restart Hive on Tez
+After adding the above said configuration to respective hive server groups restart Hive on Tez service.
+Verify in Hive Metastore DB
+Once this is done login into the HMS mysql server.
+
+
+Switch to the hive ( Metastore's hive db ) in our case;
+
+And run the following sql
+
+SELECT TBL_ID,TBL_NAME,LAST_ACCESS_TIME,OWNER,OWNER_TYPE,DB_ID from TBLS where DB_ID > 3 ;
+
+SELECT TBL_ID, TBL_NAME, FROM_UNIXTIME(LAST_ACCESS_TIME, '%Y-%m-%d %H:%i:%s') AS LAST_ACCESS_TIME, OWNER, OWNER_TYPE, DB_ID FROM TBLS WHERE DB_ID > 3 order by LAST_ACCESS_TIME;
+
+mysql -u root -p hive -B -e "SELECT CONCAT(d.NAME, '.', t.TBL_NAME) AS DB_TABLE_NAME, t.TBL_ID, DATE_FORMAT(FROM_UNIXTIME(t.LAST_ACCESS_TIME), '%Y-%m-%d-%H') AS FORMATTED_LAST_ACCESS_TIME, t.OWNER, t.OWNER_TYPE, t.DB_ID FROM TBLS t JOIN DBS d ON t.DB_ID = d.DB_ID WHERE t.DB_ID > 3 AND (UNIX_TIMESTAMP() - t.LAST_ACCESS_TIME) > (60 * 24 * 60 * 60) order by LAST_ACCESS_TIME DESC;" | sed 's/\t/,/g' > output.csv
+
+you will notice the LAST_ACCESS_TIME column containing the timestamp data.
